@@ -7,7 +7,7 @@ const fetchXml = async (url) => {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/xml'
+        'Content-Type': 'text/plain'
       }
     });
 
@@ -25,8 +25,9 @@ const fetchXml = async (url) => {
 };
 
 function App() {
-  const [cash, setCash] = useState('')
+  const [cash, setCash] = useState(0)
   const [valute, setValute] = useState({})
+  const [result, setResult] = useState(0)
   const [valutes, setValutes] = useState([])
 
   useEffect(async () => {
@@ -35,7 +36,6 @@ function App() {
     // const xmlDoc = await fetchXml(hack + 'https://www.cbr.ru/scripts/xml_daily.asp')
 
     const xmlString = xmlData;
-
 
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xmlString, "text/xml");
@@ -49,29 +49,38 @@ function App() {
       valuteObj.charCode = valute.getElementsByTagName('CharCode')[0].innerHTML;
       valuteObj.nominal = valute.getElementsByTagName('Nominal')[0].innerHTML;
       valuteObj.name = valute.getElementsByTagName('Name')[0].innerHTML;
-      valuteObj.value = valute.getElementsByTagName('Value')[0].innerHTML;
+      valuteObj.value = Number.parseFloat(valute.getElementsByTagName('Value')[0].innerHTML.replace(",", "."));
 
-      // console.log('obj', valuteObj);
+      // console.log('valuteObj', valuteObj.value, valute.getElementsByTagName('Value')[0].innerHTML);
       valutes.push(valuteObj);
     }
 
-    console.log(valutes);
     setValutes(valutes)
+    console.log(valutes);
+    setValute(valutes[0])
+  }, [])
 
-    // const valutes = Array.from(valutesHtml)
-  }, [valute])
+  useEffect(() => {
+    console.log('cash, valute.value', cash, valute)
+    setResult(cash * valute.value);
+  }, [cash, valute, valutes])
 
   const handleInput = event => {
-    setCash(event.target.value)
+    if (Number(event.target.value)) {
+      setCash(+event.target.value)
+    }
+    if (event.target.value == '') {
+      setCash(0);
+    }
+    // setResult()
   }
 
   const handleSelect = event => {
-    setValute(event.target.value)
+    setValute(valutes.find(el => el.charCode == event.target.value))
   }
   
   const handleSubmit = event => {
     event.preventDefault();
-    console.log('form value', cash, valute);
   }
 
   return (
@@ -84,14 +93,13 @@ function App() {
         <form className="test-form" onSubmit={handleSubmit}>
           <input className="form-input field" value={cash} onChange={handleInput} type="text" placeholder="Сумма в рублях" />
 
-          <select className="form-select field" value={valute} onChange={handleSelect}>
+          <select className="form-select field" value={valute.value} onChange={handleSelect}>
             {valutes.map(valute => 
               <option value={valute.charCode}>{valute.name}</option>
             )}
           </select>
 
-          <input className="form-input field" type="text" placeholder="Сумма в другой валюте" />
-          {/* <button type="submit">Отправить форму</button> */}
+          <input className="form-input field" readOnly type="text" value={result} placeholder="Сумма в другой валюте" />
         </form>
       </div>
     </div>
