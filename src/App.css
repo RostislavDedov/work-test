@@ -1,0 +1,30 @@
+.App-header {
+  height: 50px;
+  background-color: #9191ff;
+  color: #fff;
+  line-height: 50px;
+}
+
+.tac {
+  text-align: center;
+}
+
+.form-wrapper {
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.test-form {
+  width: 500px;
+  border: #000 solid 1px;
+  display: flex;
+  padding: 15px;
+  flex-direction: column;
+
+}
+
+.field {
+  margin-bottom: 15px;
+}
