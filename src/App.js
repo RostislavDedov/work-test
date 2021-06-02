@@ -5,14 +5,14 @@ import { xmlData } from './xml_daily';
 const fetchXml = async (url) => {
   try {
     const response = await fetch(url, {
-      method: 'POST',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/xml; charset=UTF-8'
       }
     });
 
     const responseText = await response.text();
-    console.log('responseText', responseText);
+    // console.log('responseText', responseText);
 
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(responseText, "text/xml");
@@ -31,7 +31,7 @@ function App() {
   const [valutes, setValutes] = useState([])
 
   useEffect(async () => {
-
+    // это то, что хотелось бы, чтобы работало
     // const hack = 'https://cors-anywhere.herokuapp.com/';
     // const xmlDoc = await fetchXml(hack + 'https://www.cbr.ru/scripts/xml_daily.asp')
 
@@ -59,7 +59,6 @@ function App() {
   }, [])
 
   useEffect(() => {
-    console.log('cash, valute.value', cash, valute)
     setResult(cash * valute.value);
   }, [cash, valute, valutes])
 
