@@ -7,7 +7,7 @@ const fetchXml = async (url) => {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Content-Type': 'text/plain'
+        'Content-Type': 'application/xml; charset=UTF-8'
       }
     });
 
@@ -51,12 +51,10 @@ function App() {
       valuteObj.name = valute.getElementsByTagName('Name')[0].innerHTML;
       valuteObj.value = Number.parseFloat(valute.getElementsByTagName('Value')[0].innerHTML.replace(",", "."));
 
-      // console.log('valuteObj', valuteObj.value, valute.getElementsByTagName('Value')[0].innerHTML);
       valutes.push(valuteObj);
     }
 
     setValutes(valutes)
-    console.log(valutes);
     setValute(valutes[0])
   }, [])
 
@@ -72,7 +70,6 @@ function App() {
     if (event.target.value == '') {
       setCash(0);
     }
-    // setResult()
   }
 
   const handleSelect = event => {
@@ -93,7 +90,7 @@ function App() {
         <form className="test-form" onSubmit={handleSubmit}>
           <input className="form-input field" value={cash} onChange={handleInput} type="text" placeholder="Сумма в рублях" />
 
-          <select className="form-select field" value={valute.value} onChange={handleSelect}>
+          <select className="form-select field" value={valute.charCode} onChange={handleSelect}>
             {valutes.map(valute => 
               <option value={valute.charCode}>{valute.name}</option>
             )}
